@@ -24,7 +24,7 @@
 	    Get Customers
 	  </a>
 	  <div class="right menu" >
-	  <a class="item" class="ui inverted green button" href="/pages/loginpage"  style="color:#ffa500d9">
+	  <a class="item" class="ui inverted green button" href="/login/loginpage"  style="color:#ffa500d9">
 	    Login
 	  </a>
 	  <a class="item" class="ui inverted green button" href="/register/signuppage"  style="color:#ffa500d9">

@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
+import com.project.PlaneLogin.user.CrmUser;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurationSetup extends WebSecurityConfigurerAdapter {
@@ -25,15 +27,21 @@ public class SecurityConfigurationSetup extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private DataSource dataSource;
 
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
 
 	// Enable jdbc authentication
 	@Autowired
 	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder());
+		auth
+			.jdbcAuthentication()
+			.dataSource(dataSource)
+			//.passwordEncoder(new BCryptPasswordEncoder());
+			.passwordEncoder(passwordEncoder());	//to call with a bean
 	}
 
 	@Bean
@@ -69,13 +77,14 @@ public class SecurityConfigurationSetup extends WebSecurityConfigurerAdapter {
 		.antMatchers("/index").permitAll()
 		.antMatchers("/pages/signuppage").permitAll()
 		.antMatchers("/pages/getusers").hasAnyRole("EMPLOYEE", "MANAGER")
-		.antMatchers("/pages/securedHome").hasAnyRole("EMPLOYEE", "MANAGER")	//if we don't keep this we will be directed to the secured home page by typing the url without any authentication
+		.antMatchers("/login/securedHome").hasAnyRole("EMPLOYEE", "MANAGER")	//if we don't keep this we will be directed to the secured home page by typing the url without any authentication
 		.and()
 		.formLogin()
-				.loginPage("/pages/loginpage")
+				.loginPage("/login/loginpage")
 				.loginProcessingUrl("/authenticateTheUser")
 				//.successForwardUrl("/pages/securedHome")	//don't use this as we are getting
-				.defaultSuccessUrl("/pages/securedHome", true) //: if we use this without authentication it is going
+				
+				.defaultSuccessUrl("/login/securedHome", true) //: if we use this without authentication it is going
 				.failureUrl("/pages/loginpage?error=true")
 				.permitAll()
 			.and()
